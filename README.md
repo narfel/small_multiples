@@ -5,6 +5,12 @@ Inspired by the R-Package of [marcusvolz](https://github.com/marcusvolz/strava)
 ![facets](https://github.com/narfel/small_multiples/blob/master/plots/plot.png "Gpx track outlines")
 
 ## Usage
-Usage: small_multiples.py [path]
+***Usage***: small_multiples.py [path]
+***Example***: python small_multiples d:\activities\\*.gpx
 
-Example: python small_multiples d:\activities\\*.gpx
+## Dependecies
+matplotlib and pandas
+```
+pip install pandas
+pip install matplotlib
+```
