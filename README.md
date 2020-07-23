@@ -7,4 +7,4 @@ Inspired by the R-Package of [marcusvolz](https://github.com/marcusvolz/strava)
 ## Usage
 Usage: small_multiples.py [path]
 
-Example: python small_multiples d:\activities\*.gpx
+Example: python small_multiples d:\activities\\*.gpx
