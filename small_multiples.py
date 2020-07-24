@@ -2,6 +2,7 @@ import glob
 import sys
 import xml.etree.ElementTree as etree
 from datetime import datetime
+from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,15 +11,15 @@ DF_COLS_DICT = ["lat", "lon"]
 MIN_FILES = 4
 
 
-def strip_namespaces(tag_elem):
+def strip_namespaces(tag_elem: Any) -> Any:
     """ Strip all namespaces from the gpx """
     idx = tag_elem.rfind("}")
     if idx != -1:
-        tag_elem = tag_elem[idx + 1:]
+        tag_elem = tag_elem[idx + 1 :]
     return tag_elem
 
 
-def parse_xml(xml_file, df_cols):
+def parse_xml(xml_file: str, df_cols: list) -> pd.DataFrame:
     """ Parse raw gpx into a dataframe """
     rows = []
     for event, elem in etree.iterparse(xml_file, events=("start", "end")):
