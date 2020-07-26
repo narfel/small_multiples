@@ -1,3 +1,4 @@
+import argparse
 import glob
 import sys
 import xml.etree.ElementTree as etree
@@ -5,6 +6,7 @@ from datetime import datetime
 from typing import Any
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 DF_COLS_DICT = ["lat", "lon"]
@@ -15,7 +17,7 @@ def strip_namespaces(tag_elem: Any) -> Any:
     """ Strip all namespaces from the gpx """
     idx = tag_elem.rfind("}")
     if idx != -1:
-        tag_elem = tag_elem[idx + 1 :]
+        tag_elem = tag_elem[idx + 1:]
     return tag_elem
 
 
@@ -41,34 +43,36 @@ def main():
         print("Needs Python >3.6")
         sys.exit(1)
 
-    if len(sys.argv) != 2:
-        print(
-            "Usage: small_multiples.py [path] \n"
-            "Example: python small_multiples.py d:\\activities\\*.gpx"
-        )
+    args_parser = argparse.ArgumentParser()
+    args_parser.add_argument(
+        dest="dir",
+        metavar="gpx_directory",
+        type=str,
+        help="A directory containing at least {MIN_FILES} gpx files",
+    )
+    args = args_parser.parse_args()
+
+    filenames = glob.glob(args.dir)
+    if len(filenames) <= MIN_FILES:
+        print(f"No or too few gpx files found. You need at least {MIN_FILES} files")
         sys.exit(1)
     else:
-        filenames = glob.glob(sys.argv[1])
-        if len(filenames) <= MIN_FILES:
-            print(f"You need at least {MIN_FILES} files")
-            sys.exit(1)
-        else:
-            file_num = len(filenames)
-            start_time = datetime.now()
-            print("-" * 100)
-            print(f"File(s) found: {file_num}")
-            df_list = [
-                parse_xml(filenames[index], DF_COLS_DICT) for index in range(file_num)
-            ]
-            rows_count = int(pd.np.sqrt(file_num))
-            cols_count = int(file_num / rows_count) + 1
-            print(f"Grid Layout: ({ rows_count }, { cols_count }) ")
-            grid_layout = [divmod(x, rows_count) for x in range(file_num)]
-            fig, ax = plt.subplots(cols_count, rows_count)
-            for ax_i in pd.np.ravel(ax):
-                ax_i.axis("off")
-            for i in range(file_num):
-                ax[grid_layout[i]].plot(df_list[i]["lon"], df_list[i]["lat"])
+        file_num = len(filenames)
+        start_time = datetime.now()
+        print("-" * 100)
+        print(f"File(s) found: {file_num}")
+        df_list = [
+            parse_xml(filenames[index], DF_COLS_DICT) for index in range(file_num)
+        ]
+        rows_count = int(np.sqrt(file_num))
+        cols_count = int(file_num / rows_count) + 1
+        print(f"Grid Layout: ({ rows_count }, { cols_count }) ")
+        grid_layout = [divmod(x, rows_count) for x in range(file_num)]
+        fig, ax = plt.subplots(cols_count, rows_count)
+        for ax_i in np.ravel(ax):
+            ax_i.axis("off")
+        for i in range(file_num):
+            ax[grid_layout[i]].plot(df_list[i]["lon"], df_list[i]["lat"])
 
     end_time = datetime.now()
     print(f"Total time: [{str(end_time - start_time).split('.')[0]}]")
