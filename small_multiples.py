@@ -17,13 +17,14 @@ def strip_namespaces(tag_elem: Any) -> Any:
     """ Strip all namespaces from the gpx """
     idx = tag_elem.rfind("}")
     if idx != -1:
-        tag_elem = tag_elem[idx + 1:]
+        tag_elem = tag_elem[idx + 1 :]
     return tag_elem
 
 
 def parse_xml(xml_file: str, df_cols: list) -> pd.DataFrame:
     """ Parse raw gpx into a dataframe """
     rows = []
+    # Strip out namespaces and parse out trackpoints into list
     for event, elem in etree.iterparse(xml_file, events=("start", "end")):
         tag_names = strip_namespaces(elem.tag)
         if event == "start":
@@ -32,13 +33,14 @@ def parse_xml(xml_file: str, df_cols: list) -> pd.DataFrame:
                 res.append(elem.attrib[df_cols[0]])
                 res.append(elem.attrib[df_cols[1]])
                 rows.append({df_cols[i]: float(res[i]) for i, _ in enumerate(df_cols)})
-
+    # Create dataframe
     gpx_df = pd.DataFrame(rows, columns=df_cols)
     return gpx_df
 
 
 def main():
     """ Print small multiples from gpx files """
+    start_time = datetime.now()
     if sys.version_info <= (3, 6, 0):
         print("Needs Python >3.6")
         sys.exit(1)
@@ -52,25 +54,30 @@ def main():
     )
     args = args_parser.parse_args()
 
+    # Pattern expansion of pathname argument
     filenames = glob.glob(args.dir)
     if len(filenames) <= MIN_FILES:
         print(f"No or too few gpx files found. You need at least {MIN_FILES} files")
         sys.exit(1)
     else:
         file_num = len(filenames)
-        start_time = datetime.now()
         print("-" * 100)
-        print(f"File(s) found: {file_num}")
+        print(f"{file_num} file(s) found. Processing...")
+        # Create outer dataframe
         df_list = [
             parse_xml(filenames[index], DF_COLS_DICT) for index in range(file_num)
         ]
+        # Layout calculations
         rows_count = int(np.sqrt(file_num))
         cols_count = int(file_num / rows_count) + 1
         print(f"Grid Layout: ({ rows_count }, { cols_count }) ")
+        # Arrange tiles in a grid
         grid_layout = [divmod(x, rows_count) for x in range(file_num)]
         fig, ax = plt.subplots(cols_count, rows_count)
+        # Turn off plot decorations
         for ax_i in np.ravel(ax):
             ax_i.axis("off")
+        # Plot tiles
         for i in range(file_num):
             ax[grid_layout[i]].plot(df_list[i]["lon"], df_list[i]["lat"])
 
