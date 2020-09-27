@@ -3,7 +3,7 @@ Create facets/small multiples of gpx tracks using matplotlib/pandas.
 Inspired by the R-Package of [marcusvolz](https://github.com/marcusvolz/strava) 
 
 Track shapes:
-![facets](https://github.com/narfel/small_multiples/blob/master/plots/plot.png "Gpx track outlines")
+![facets](https://github.com/narfel/small_multiples/blob/master/plots/plot_shape.png "Gpx track outlines")
 
 Elevation:
 ![elevation](https://github.com/narfel/small_multiples/blob/master/plots/plot_ele.png "Elevation graphs")
