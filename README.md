@@ -6,7 +6,7 @@ Track shapes:
 ![facets](https://github.com/narfel/small_multiples/blob/master/plots/plot.png "Gpx track outlines")
 
 Elevation:
-![facets](https://github.com/narfel/small_multiples/blob/master/plots/plot_ele.png "Elevation graohs")
+![elevation](https://github.com/narfel/small_multiples/blob/master/plots/plot_ele.png "Elevation graphs")
 
 ## Usage
 ***Usage***: small_multiples.py [path]
